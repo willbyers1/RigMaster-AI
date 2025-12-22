@@ -1,7 +1,6 @@
-
 import React, { useState } from 'react';
 import { X, Lock, Key, AlertCircle } from 'lucide-react';
-import { useStore } from '../store';
+import { useStore } from '../store'; // Store yolun bu şekilde doğru
 
 interface ApiKeyModalProps {
   isOpen: boolean;
@@ -11,7 +10,9 @@ interface ApiKeyModalProps {
 const ApiKeyModal: React.FC<ApiKeyModalProps> = ({ isOpen, onClose }) => {
   const [key, setKey] = useState('');
   const [error, setError] = useState('');
-  const { setConnected } = useStore();
+  
+  // Store'dan setConnected yerine setApiKey alıyoruz
+  const { setApiKey } = useStore();
 
   if (!isOpen) return null;
 
@@ -22,9 +23,14 @@ const ApiKeyModal: React.FC<ApiKeyModalProps> = ({ isOpen, onClose }) => {
       return;
     }
 
-    localStorage.setItem('rigmaster_api_key', key.trim());
-    setConnected(true);
+    // 1. Key'i Store'a kaydet (bu zaten localStorage'a da yazar)
+    setApiKey(key.trim());
+    
+    // 2. Modalı kapat
     onClose();
+
+    // 3. Sayfayı yenile ki App.tsx yeni key'i algılayıp Dashboard'a geçsin
+    window.location.reload();
   };
 
   return (
@@ -66,14 +72,14 @@ const ApiKeyModal: React.FC<ApiKeyModalProps> = ({ isOpen, onClose }) => {
                     setError('');
                   }}
                   placeholder="Paste Your API Key"
-                  className="w-full bg-[#000000] border-2 border-purple-600 rounded-2xl px-6 py-5 text-white placeholder-slate-700 focus:outline-none focus:ring-4 focus:ring-purple-600/20 font-mono transition-all"
+                  className="w-full bg-[#000000] border-2 border-purple-600 rounded-2xl px-6 py-5 text-white placeholder-slate-700 focus:outline-none focus:ring-4 focus:ring-purple-600/20 font-mono transition-all text-center"
                   autoFocus
                 />
                 <Key className="absolute right-6 top-1/2 -translate-y-1/2 w-5 h-5 text-purple-600/50" />
               </div>
               
               {error && (
-                <div className="flex items-center gap-2 text-rose-500 text-xs font-bold px-2 animate-in slide-in-from-top-2">
+                <div className="flex items-center justify-center gap-2 text-rose-500 text-xs font-bold px-2 animate-in slide-in-from-top-2">
                   <AlertCircle className="w-4 h-4" />
                   {error}
                 </div>
@@ -91,12 +97,12 @@ const ApiKeyModal: React.FC<ApiKeyModalProps> = ({ isOpen, onClose }) => {
           {/* Footer Metadata */}
           <div className="pt-6 border-t border-white/5 flex flex-col items-center gap-4">
             <a 
-              href="https://ai.google.dev/gemini-api/docs/api-key" 
+              href="https://aistudio.google.com/app/api-keys" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="text-[10px] font-black text-slate-600 hover:text-purple-400 uppercase tracking-widest transition-colors"
+              className="text-[10px] font-black text-slate-600 hover:text-purple-400 uppercase tracking-widest transition-colors border-b border-transparent hover:border-purple-400"
             >
-              Get a key from Google AI Studio
+              Get a free key at Google AI Studio
             </a>
             <div className="flex items-center gap-4 text-[9px] font-black text-slate-800 uppercase tracking-widest">
               <span>SECURE ACCESS ONLY</span>
