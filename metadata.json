@@ -1,0 +1,5 @@
+{
+  "name": "RigMaster AI",
+  "description": "A high-performance gaming companion that predicts FPS using Gemini AI and manages PC/Laptop maintenance schedules to ensure hardware longevity.",
+  "requestFramePermissions": []
+}
